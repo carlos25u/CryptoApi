@@ -26,12 +26,11 @@ public class CoinsController : ControllerBase
         return _contexto.Coins.AsNoTracking().ToList();
     }
 
-    [HttpPost]
+    [HttpPost("PostCoins")]
     public async Task<ActionResult<Coins>> postCoin(Coins coin)
     {
         _contexto.Coins.Add(coin);
         await _contexto.SaveChangesAsync();
         return CreatedAtAction(nameof(postCoin), coin);
     }
-
 }
