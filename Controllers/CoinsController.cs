@@ -20,7 +20,7 @@ public class CoinsController : ControllerBase
 
     }
 
-    [HttpGet(Name = "GetCoins")]
+    [HttpGet("GetCoins")]
     public IEnumerable<Coins> Get()
     {
         return _contexto.Coins.AsNoTracking().ToList();
@@ -33,4 +33,70 @@ public class CoinsController : ControllerBase
         await _contexto.SaveChangesAsync();
         return CreatedAtAction(nameof(postCoin), coin);
     }
+
+    [HttpDelete("DeleteCoins/{id}")]
+    public async Task<ActionResult<Coins>> deleteCoins(int id)
+    {
+        var coins = await _contexto.Coins.FindAsync(id);
+
+        if (coins != null)
+        {
+            _contexto.Coins.Remove(coins);
+            await _contexto.SaveChangesAsync();
+        }
+        else
+        {
+            return NotFound();
+        }
+
+        return NoContent();
+    }
+
+    [HttpGet("GetCoin/{id}")]
+    public async Task<ActionResult<Coins>>GetCoin(int id)
+    {
+        var coins = await _contexto.Coins.FindAsync(id);
+
+        if(coins == null)
+        {
+            return NotFound();
+        }
+        
+        return coins;
+    }
+
+    [HttpPut("PutCoins/{id}")]
+    public async Task<ActionResult<Coins>> PutCoins(int id, Coins coins)
+    {
+        if (id != coins.CoinId)
+        {
+            return BadRequest();
+        }
+
+        _contexto.Entry(coins).State = EntityState.Modified;
+
+        try
+        {
+            await _contexto.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!ExisteCoins(id))
+            {
+                return NotFound();
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        return NoContent();
+    }
+
+    private bool ExisteCoins(int id)
+    {
+        return _contexto.Coins.Any(e => e.CoinId == id);
+    }
+
 }
