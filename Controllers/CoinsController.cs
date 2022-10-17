@@ -35,7 +35,7 @@ public class CoinsController : ControllerBase
     }
 
     [HttpDelete("DeleteCoins/{id}")]
-    public async Task<ActionResult<Coins>> deleteCoins(int id)
+    public async Task<IActionResult> deleteCoins(int id)
     {
         var coins = await _contexto.Coins.FindAsync(id);
 
@@ -66,7 +66,7 @@ public class CoinsController : ControllerBase
     }
 
     [HttpPut("PutCoins/{id}")]
-    public async Task<ActionResult<Coins>> PutCoins(int id, Coins coins)
+    public async Task<IActionResult> PutCoins(int id, Coins coins)
     {
         if (id != coins.CoinId)
         {
